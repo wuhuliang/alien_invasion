@@ -1,29 +1,30 @@
 #--coding:utf-8--
 
-import sys
 import pygame
+from pygame.sprite import Group
+
+from settings import setting
+from ship import Ship
+import game_function as gf
 
 def run_game():
-    #初始化游戏，创建一个屏幕对象
+    #初始化pygame、设置屏幕对象
     pygame.init()
-    screen = pygame.display.set_mode((1100,800))
+    ai_setting = setting()
+    screen = pygame.display.set_mode((ai_setting.screen_width,ai_setting.screen_height))
     pygame.display.set_caption("Alien Invasion")
 
-    #设置背景色
-    bg_color = (230,230,230)
+    #创建一艘飞船
+    ship = Ship(ai_setting,screen)
+    #创建一个存储子弹的编组
+    bullets = Group()
+
 
     #开始游戏主循环
     while True:
-
-        #监视键盘和鼠标事件
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                sys.exit()
-
-        #每次循环之后都重绘屏幕
-        screen.fill(bg_color)
-
-        #让最近绘制的屏幕可见
-        pygame.display.flip()
+        gf.check_events(ai_setting,screen,ship,bullets)
+        ship.update()
+        gf.update_bullets(bullets)
+        gf.update_screen(ai_setting,ship,screen,bullets)
 
 run_game()
